@@ -132,8 +132,17 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DJANGO_REST_FRAMEWORK = {
-    "DJANGO_AUTHENTICATION_CLASSES": "rest_framework.authentication.TokenAuthentication"
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
 }
+
+BASE_EMAIL_VERIFY_URL = "http://localhost:3000/verify-email"

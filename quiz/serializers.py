@@ -6,8 +6,8 @@ from .models import Option, Question
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
-        fields = ['id', 'option', 'isCorrect', 'questioId']
-        required = '__all__'
+        fields = ['id', 'option', 'isCorrect']
+        required = ['option', 'isCorrect']
 
 
 class QuestionSerializer(serializers.ModelSerializer):

@@ -54,3 +54,44 @@ class QuizAttemptSerializer(serializers.ModelSerializer):
                 question=question, attempt=quiz_attempt)
 
         return quiz_attempt
+
+
+class AnswerSerializer(serializers.Serializer):
+    question_attempt_id = serializers.IntegerField()
+    selected_option_id = serializers.IntegerField()
+
+
+class QuizSubmissionSerializer(serializers.Serializer):
+    quiz_attempt_id = serializers.IntegerField()
+    answers = AnswerSerializer(many=True)
+
+    def update(self, instance, validated_data):
+        """
+            updates the instance of Quiz Attempt
+        """
+        answers = validated_data.get('answers')
+        total_score = 0
+        for answer in answers:
+            question_attempt_id = answer.get('question_attempt_id')
+            selected_option_id = answer.get('selected_option_id')
+            try:
+                questionAttempt = QuestionAttempt.objects.get(
+                    id=question_attempt_id)
+            except QuestionAttempt.DoesNotExist:
+                continue
+            selectedOption = Option.objects.get(id=selected_option_id)
+            # update selected option of question attempt model
+            questionAttempt.selectedOption = selectedOption
+            # update isCorrect option of question attempt model
+            questionAttempt.isCorrect = selectedOption.isCorrect
+            # save changes to databse
+            questionAttempt.save()
+
+            # check if user selected correct option
+            if selectedOption.isCorrect:
+                total_score += 1
+
+        # update total_score in quiz attempt
+        instance.total_score = total_score
+        instance.save()
+        return {'score': total_score}

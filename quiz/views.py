@@ -49,7 +49,7 @@ def submitQuiz(request):
         quiz_attempt_id = serializer.validated_data['quiz_attempt_id']
         try:
             quizAttempt = QuizAttempt.objects.get(
-                id=quiz_attempt_id, user=request['user'])
+                id=quiz_attempt_id, user=request.user)
 
             score = serializer.update(quizAttempt, serializer.validated_data)
             return Response(score, status=HTTP_201_CREATED)
